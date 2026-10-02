@@ -34,7 +34,7 @@ class ApiClient {
     _logger.d('API RESPONSE: [${response.statusCode}] ${response.request?.url}\nBody: ${response.body}');
   }
 
-  dynamic _handleResponse(http.Response response) {
+  Future<dynamic> _handleResponse(http.Response response) async {
     _logResponse(response);
     
     if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -92,7 +92,7 @@ class ApiClient {
       _logRequest('GET', uri.toString());
       
       final response = await _client.get(uri, headers: headers).timeout(const Duration(seconds: 15));
-      return _handleResponse(response);
+      return await _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
       throw NetworkException(e.toString());
@@ -111,7 +111,7 @@ class ApiClient {
         body: body != null ? jsonEncode(body) : null,
       ).timeout(const Duration(seconds: 15));
       
-      return _handleResponse(response);
+      return await _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
       throw NetworkException(e.toString());
@@ -130,7 +130,7 @@ class ApiClient {
         body: body != null ? jsonEncode(body) : null,
       ).timeout(const Duration(seconds: 15));
       
-      return _handleResponse(response);
+      return await _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
       throw NetworkException(e.toString());
@@ -149,7 +149,7 @@ class ApiClient {
         body: body != null ? jsonEncode(body) : null,
       ).timeout(const Duration(seconds: 15));
       
-      return _handleResponse(response);
+      return await _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
       throw NetworkException(e.toString());
@@ -163,7 +163,7 @@ class ApiClient {
       _logRequest('DELETE', uri.toString());
       
       final response = await _client.delete(uri, headers: headers).timeout(const Duration(seconds: 15));
-      return _handleResponse(response);
+      return await _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
       throw NetworkException(e.toString());
