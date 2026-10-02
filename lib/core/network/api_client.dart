@@ -34,7 +34,7 @@ class ApiClient {
     _logger.d('API RESPONSE: [${response.statusCode}] ${response.request?.url}\nBody: ${response.body}');
   }
 
-  Future<dynamic> _handleResponse(http.Response response) async {
+  dynamic _handleResponse(http.Response response) {
     _logResponse(response);
     
     if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -45,31 +45,6 @@ class ApiClient {
         return response.body; // Return as string if not JSON
       }
     } else if (response.statusCode == 401) {
-      // Token expired, attempt refresh
-      final refresh = await _secureStorage.getRefreshToken();
-      if (refresh != null && refresh.isNotEmpty) {
-        try {
-          final refreshResponse = await _client.post(
-            Uri.parse('${Env.baseUrl}auth/token/refresh/'),
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: jsonEncode({'refresh': refresh}),
-          );
-          if (refreshResponse.statusCode == 200) {
-            final data = jsonDecode(refreshResponse.body);
-            final newAccess = data['access'];
-            if (newAccess != null) {
-              await _secureStorage.saveToken(newAccess);
-              // Note: Ideally we would retry the original request here, but for simplicity we throw a specific exception to be handled by the repository or caller to retry.
-              // A more robust implementation would recursively call the original method.
-            }
-          }
-        } catch (e) {
-          _logger.w('Token refresh failed: $e');
-        }
-      }
       throw UnauthorizedException('Unauthorized access', statusCode: 401, responseData: response.body);
     } else {
       dynamic errorData;
@@ -92,7 +67,7 @@ class ApiClient {
       _logRequest('GET', uri.toString());
       
       final response = await _client.get(uri, headers: headers).timeout(const Duration(seconds: 15));
-      return await _handleResponse(response);
+      return _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
       throw NetworkException(e.toString());
@@ -111,7 +86,7 @@ class ApiClient {
         body: body != null ? jsonEncode(body) : null,
       ).timeout(const Duration(seconds: 15));
       
-      return await _handleResponse(response);
+      return _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
       throw NetworkException(e.toString());
@@ -130,7 +105,7 @@ class ApiClient {
         body: body != null ? jsonEncode(body) : null,
       ).timeout(const Duration(seconds: 15));
       
-      return await _handleResponse(response);
+      return _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
       throw NetworkException(e.toString());
@@ -149,7 +124,7 @@ class ApiClient {
         body: body != null ? jsonEncode(body) : null,
       ).timeout(const Duration(seconds: 15));
       
-      return await _handleResponse(response);
+      return _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
       throw NetworkException(e.toString());
@@ -163,7 +138,7 @@ class ApiClient {
       _logRequest('DELETE', uri.toString());
       
       final response = await _client.delete(uri, headers: headers).timeout(const Duration(seconds: 15));
-      return await _handleResponse(response);
+      return _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
       throw NetworkException(e.toString());

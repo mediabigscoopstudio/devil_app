@@ -7,7 +7,7 @@ class MessagingRepository {
   MessagingRepository(this._apiClient);
 
   Future<List<Conversation>> getConversations() async {
-    final response = await _apiClient.get('messaging/conversations/');
+    final response = await _apiClient.get('conversations/');
     List<dynamic> data;
     if (response is Map && response.containsKey('results')) {
       data = response['results'];
@@ -20,7 +20,7 @@ class MessagingRepository {
   }
 
   Future<List<Message>> getMessages(int conversationId) async {
-    final response = await _apiClient.get('messaging/conversations/$conversationId/messages/');
+    final response = await _apiClient.get('conversations/$conversationId/messages/');
     List<dynamic> data;
     if (response is Map && response.containsKey('results')) {
       data = response['results'];
@@ -34,7 +34,7 @@ class MessagingRepository {
 
   Future<Message> sendMessage(int conversationId, String content) async {
     final response = await _apiClient.post(
-      'messaging/conversations/$conversationId/messages/',
+      'conversations/$conversationId/messages/',
       body: {'content': content},
     );
     return Message.fromJson(response);
