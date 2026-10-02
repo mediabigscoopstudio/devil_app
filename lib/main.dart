@@ -6,6 +6,7 @@ import 'features/auth/repositories/auth_repository.dart';
 import 'features/auth/models/auth_provider.dart';
 import 'features/profile/repositories/profile_repository.dart';
 import 'features/profile/models/profile_provider.dart';
+import 'features/profile/models/onboarding_provider.dart';
 import 'features/discovery/repositories/discovery_repository.dart';
 import 'features/discovery/models/discovery_provider.dart';
 import 'features/matching/repositories/matching_repository.dart';
@@ -45,6 +46,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<ProfileRepository, ProfileProvider>(
           create: (context) => ProfileProvider(context.read<ProfileRepository>()),
           update: (_, profileRepo, profileProvider) => profileProvider ?? ProfileProvider(profileRepo),
+        ),
+        ChangeNotifierProxyProvider2<ProfileRepository, AuthProvider, OnboardingProvider>(
+          create: (context) => OnboardingProvider(context.read<ProfileRepository>(), context.read<AuthProvider>()),
+          update: (_, profileRepo, authProvider, onboardingProvider) => onboardingProvider ?? OnboardingProvider(profileRepo, authProvider),
         ),
         ProxyProvider<ApiClient, DiscoveryRepository>(
           update: (_, api, prev) => DiscoveryRepository(api),

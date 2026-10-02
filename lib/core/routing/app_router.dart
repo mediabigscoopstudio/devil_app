@@ -3,8 +3,18 @@ import '../../features/auth/models/auth_provider.dart';
 import '../../features/auth/presentation/screens/sign_in_screen.dart';
 import '../../features/auth/screens/otp_screen.dart';
 import '../../features/auth/screens/phone_screen.dart';
-import '../../features/auth/screens/onboarding_placeholder_screen.dart';
 import '../../features/profile/models/profile.dart';
+import '../../features/profile/screens/onboarding/name_screen.dart';
+import '../../features/profile/screens/onboarding/age_screen.dart';
+import '../../features/profile/screens/onboarding/gender_screen.dart';
+import '../../features/profile/screens/onboarding/looking_for_screen.dart';
+import '../../features/profile/screens/onboarding/interests_screen.dart';
+import '../../features/profile/screens/onboarding/photos_screen.dart';
+import '../../features/profile/screens/onboarding/bio_screen.dart';
+import '../../features/profile/screens/onboarding/location_screen.dart';
+import '../../features/profile/screens/onboarding/review_screen.dart';
+import '../../features/profile/screens/onboarding/notifications_screen.dart';
+import '../../features/profile/screens/onboarding/success_screen.dart';
 import '../../features/messaging/screens/conversation_detail_screen.dart';
 import '../../shared/widgets/main_navigation_screen.dart';
 
@@ -67,7 +77,51 @@ class AppRouter {
       ),
       GoRoute(
         path: '/onboarding',
-        builder: (context, state) => const OnboardingPlaceholderScreen(),
+        redirect: (context, state) => '/onboarding/name',
+      ),
+      GoRoute(
+        path: '/onboarding/name',
+        builder: (context, state) => const NameScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/age',
+        builder: (context, state) => const AgeScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/gender',
+        builder: (context, state) => const GenderScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/looking-for',
+        builder: (context, state) => const LookingForScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/interests',
+        builder: (context, state) => const InterestsScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/photos',
+        builder: (context, state) => const PhotosScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/bio',
+        builder: (context, state) => const BioScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/location',
+        builder: (context, state) => const LocationScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/review',
+        builder: (context, state) => const ReviewScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/notifications',
+        builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/success',
+        builder: (context, state) => const SuccessScreen(),
       ),
       GoRoute(
         path: '/',
