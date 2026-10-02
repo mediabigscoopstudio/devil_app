@@ -45,6 +45,31 @@ class ApiClient {
         return response.body; // Return as string if not JSON
       }
     } else if (response.statusCode == 401) {
+      // Token expired, attempt refresh
+      final refresh = await _secureStorage.getRefreshToken();
+      if (refresh != null && refresh.isNotEmpty) {
+        try {
+          final refreshResponse = await _client.post(
+            Uri.parse('${Env.baseUrl}auth/token/refresh/'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: jsonEncode({'refresh': refresh}),
+          );
+          if (refreshResponse.statusCode == 200) {
+            final data = jsonDecode(refreshResponse.body);
+            final newAccess = data['access'];
+            if (newAccess != null) {
+              await _secureStorage.saveToken(newAccess);
+              // Note: Ideally we would retry the original request here, but for simplicity we throw a specific exception to be handled by the repository or caller to retry.
+              // A more robust implementation would recursively call the original method.
+            }
+          }
+        } catch (e) {
+          _logger.w('Token refresh failed: $e');
+        }
+      }
       throw UnauthorizedException('Unauthorized access', statusCode: 401, responseData: response.body);
     } else {
       dynamic errorData;
